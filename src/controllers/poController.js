@@ -31,9 +31,11 @@ const obtenerPorNumero = async (req, res) => {
   try {
     const { numeroPo } = req.params;
 
-    const result = await db.query("SELECT * FROM po WHERE numeropo = $1", [
-      numeroPo,
-    ]);
+    // Usar la vista v_resumen_po en lugar de la tabla po directamente
+    const result = await db.query(
+      "SELECT * FROM v_resumen_po WHERE numeropo = $1",
+      [numeroPo]
+    );
 
     if (result.rows.length === 0) {
       return res.status(404).json({
@@ -42,10 +44,11 @@ const obtenerPorNumero = async (req, res) => {
       });
     }
 
-    // Obtener cartones asociados
-    const cartones = await db.query("SELECT * FROM carton WHERE poid = $1", [
-      numeroPo,
-    ]);
+    // Obtener cartones asociados con sus datos calculados
+    const cartones = await db.query(
+      "SELECT * FROM v_progreso_carton WHERE poid = $1 ORDER BY creadoen DESC",
+      [numeroPo]
+    );
 
     res.json({
       success: true,
