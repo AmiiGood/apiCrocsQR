@@ -6,6 +6,7 @@ require("dotenv").config();
 // Importar rutas
 const poRoutes = require("./routes/poRoutes");
 const cartonRoutes = require("./routes/cartonRoutes");
+const cajaRoutes = require("./routes/cajaRoutes");
 const escaneoRoutes = require("./routes/escaneoRoutes");
 const skuRoutes = require("./routes/skuRoutes");
 const syncRoutes = require("./routes/syncRoutes");
@@ -46,10 +47,15 @@ if (process.env.NODE_ENV === "development") {
 app.get("/", (req, res) => {
   res.json({
     message: "🚀 API Sistema de Escaneo de Cartones",
-    version: "1.0.0",
+    version: "2.0.0",
+    features: {
+      validacionTemprana: "✅ Soporte para validación de cajas monoseriales",
+      reutilizacion: "✅ Reutilización de validaciones",
+    },
     endpoints: {
       pos: "/api/pos",
       cartones: "/api/cartones",
+      cajas: "/api/cajas",
       escaneos: "/api/escaneos",
       skus: "/api/skus",
       sync: "/api/sync",
@@ -83,6 +89,7 @@ app.get("/health", async (req, res) => {
 // Rutas de la API
 app.use("/api/pos", poRoutes);
 app.use("/api/cartones", cartonRoutes);
+app.use("/api/cajas", cajaRoutes);
 app.use("/api/escaneos", escaneoRoutes);
 app.use("/api/skus", skuRoutes);
 app.use("/api/sync", syncRoutes);
@@ -140,6 +147,11 @@ pool.connect((err, client, release) => {
     console.log(`🔗 URL: http://localhost:${PORT}`);
     console.log(`📚 API Docs: http://localhost:${PORT}/`);
     console.log(`❤️  Health: http://localhost:${PORT}/health`);
+    console.log("=".repeat(50));
+    console.log("📦 Nuevas funcionalidades:");
+    console.log("   ✅ Validación temprana de cajas monoseriales");
+    console.log("   ✅ Reutilización de validaciones");
+    console.log("   ✅ Endpoints: /api/cajas/*");
     console.log("=".repeat(50) + "\n");
   });
 });
